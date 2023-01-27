@@ -21,22 +21,28 @@ public class CurrencyConversionController {
 	private CurrencyExchangeProxy proxy;
 
 	@GetMapping("/currency-conversion/from/{from}/to/{to}/quantity/{quantity}")
-	public CurrencyConversion getCurrencyConversion(@PathVariable("from") String from, @PathVariable("to") String to,
+	public CurrencyConversion getCurrencyConversion(@PathVariable("from") String from, 
+			@PathVariable("to") String to,
 			@PathVariable("quantity") BigDecimal quantity) {
 
 		Map<String, String> uriParameters = new HashMap<String, String>();
 		uriParameters.put("from", from);
 		uriParameters.put("to", to);
+		
 		ResponseEntity<CurrencyConversion> responseEntity = new RestTemplate().getForEntity(
 				"http://localhost:8000/currency-exchange/from/{from}/to/{to}", CurrencyConversion.class, uriParameters);
+		
 		CurrencyConversion ccObj = responseEntity.getBody();
+		
 		return new CurrencyConversion(ccObj.getId(), from, to, quantity, ccObj.getConversionMultiple(),
 				quantity.multiply(ccObj.getConversionMultiple()), ccObj.getEnvironment()+" by RestTemplate.");
 	}
 
 	@GetMapping("/currency-conversion-feign/from/{from}/to/{to}/quantity/{quantity}")
-	public CurrencyConversion getCurrencyConversionFeign(@PathVariable("from") String from,
-			@PathVariable("to") String to, @PathVariable("quantity") BigDecimal quantity) {
+	public CurrencyConversion getCurrencyConversionFeign(
+			@PathVariable("from") String from,
+			@PathVariable("to") String to, 
+			@PathVariable("quantity") BigDecimal quantity) {
 
 		CurrencyConversion ccObj = proxy.getCurrencyExchangeValue(from, to);
 		return new CurrencyConversion(ccObj.getId(), from, to, quantity, ccObj.getConversionMultiple(),

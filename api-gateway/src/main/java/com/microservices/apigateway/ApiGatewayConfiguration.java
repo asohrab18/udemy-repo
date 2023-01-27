@@ -10,7 +10,8 @@ public class ApiGatewayConfiguration {
 
 	@Bean
 	public RouteLocator gatewayRouter(RouteLocatorBuilder builder) {
-		return builder.routes().route(p -> p.path("/get").filters(f ->f.addRequestHeader("MyHeader", "myURI").addRequestParameter("param", "myParamValue")).uri("http://httpbin.org:80"))
+		return builder.routes().route(p -> p.path("/get").
+				filters(f ->f.addRequestHeader("MyHeader", "myURI").addRequestParameter("param", "myParamValue")).uri("http://httpbin.org:80"))
 				.route(p -> p.path("/currency-exchange/**").uri("lb://currency-exchange"))
 				.route(p -> p.path("/currency-conversion/**").uri("lb://currency-conversion"))
 				.route(p -> p.path("/currency-conversion-feign/**").uri("lb://currency-conversion"))
